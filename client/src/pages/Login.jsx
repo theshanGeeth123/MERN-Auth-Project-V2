@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { AppContent } from "../context/AppContext";
 import axios from 'axios';
 import { toast } from "react-toastify";
+import LoadingSpinner from "../components/LoadingSpinner";
+import NewLogo from '../assets/LogoNew.png';
 
 function Login() {
   const navigate = useNavigate();
-  const { backendUrl, setIsLoggedin, getUserData } = useContext(AppContent);
+  const { setIsLoggedin, getUserData } = useContext(AppContent);
 
   const [state, setState] = useState("login");
   const [name, setName] = useState('');
@@ -17,12 +19,17 @@ function Login() {
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
 
+  const [isLoading,setIsLoading] = useState(false);
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     axios.defaults.withCredentials = true;
 
     try {
       if (state === 'Sign Up') {
+
+        setIsLoading(true)
+
         const { data } = await axios.post('http://localhost:4000/api/auth/register', {
           name,
           email,
@@ -32,6 +39,8 @@ function Login() {
           address
         });
 
+        setIsLoading(false);
+
         if (data.success) {
           setIsLoggedin(true);
           getUserData();
@@ -39,11 +48,17 @@ function Login() {
         } else {
           toast.error(data.message);
         }
+
+
       } else {
+
+        setIsLoading(true);
         const { data } = await axios.post('http://localhost:4000/api/auth/login', {
           email,
           password
         });
+
+        setIsLoading(false);
 
         if (data.success) {
           setIsLoggedin(true);
@@ -59,14 +74,17 @@ function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to bg-purple-400">
+
+    isLoading ? <LoadingSpinner/> :
+
+    <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-white">
       <img
         onClick={() => navigate('/')}
-        src={assets.pic2}
+        src={NewLogo}
         alt=""
         className="absolute left-5 sm:left-20 top-5 w-28 sm:w-32 cursor-pointer"
       />
-      <div className="bg-slate-900 p-10 rounded-lg shadow-lg w-full sm:w-96 text-indigo-300 text-sm">
+      <div className="bg-black/90 p-10 rounded-lg shadow-lg w-full sm:w-96 text-indigo-300 text-sm">
         <h2 className="text-3xl font-semibold text-white text-center mb-3">
           {state === "Sign Up" ? "Create account" : "Login"}
         </h2>
@@ -76,7 +94,7 @@ function Login() {
 
         <form onSubmit={onSubmitHandler} className="text-sm mb-6">
           {state === "Sign Up" && (
-            <div className="flex mb-4 items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
+            <div className="flex mb-4 items-center gap-3 w-full px-5 py-2.5 rounded-xl bg-[#333A5C]">
               <img src={assets.person_icon} alt="" />
               <input
                 className="bg-transparent outline-none"
@@ -89,7 +107,7 @@ function Login() {
             </div>
           )}
 
-          <div className="flex mb-4 items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
+          <div className="flex mb-4 items-center gap-3 w-full px-5 py-2.5 rounded-xl bg-[#333A5C]">
             <img src={assets.mail_icon} alt="" />
             <input
               className="bg-transparent outline-none"
@@ -101,7 +119,7 @@ function Login() {
             />
           </div>
 
-          <div className="flex mb-4 items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
+          <div className="flex mb-4 items-center gap-3 w-full px-5 py-2.5 rounded-xl bg-[#333A5C]">
             <img src={assets.lock_icon} alt="" />
             <input
               className="bg-transparent outline-none"
@@ -115,7 +133,7 @@ function Login() {
 
           {state === "Sign Up" && (
             <>
-              <div className="flex mb-4 items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
+              <div className="flex mb-4 items-center gap-3 w-full px-5 py-2.5 rounded-xl bg-[#333A5C]">
                 <img src={assets.person_icon} alt="" />
                 <input
                   className="bg-transparent outline-none"
@@ -127,7 +145,7 @@ function Login() {
                 />
               </div>
 
-              <div className="flex mb-4 items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
+              <div className="flex mb-4 items-center gap-3 w-full px-5 py-2.5 rounded-xl bg-[#333A5C]">
                 <img src={assets.person_icon} alt="" />
                 <input
                   className="bg-transparent outline-none"
@@ -139,7 +157,7 @@ function Login() {
                 />
               </div>
 
-              <div className="flex mb-4 items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
+              <div className="flex mb-4 items-center gap-3 w-full px-5 py-2.5 rounded-xl bg-[#333A5C]">
                 <img src={assets.person_icon} alt="" />
                 <input
                   className="bg-transparent outline-none"
@@ -153,11 +171,11 @@ function Login() {
             </>
           )}
 
-          <p onClick={() => navigate('/reset-password')} className="mb-4 text-indigo-500 cursor-pointer">
+          <p onClick={() => navigate('/reset-password')} className="mb-4 text-indigo-300 cursor-pointer">
             Forgot password?
           </p>
 
-          <button className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-900 text-white font-medium">
+          <button className="w-full py-2.5 rounded-xl cursor-pointer bg-gradient-to-r from-indigo-500 to-indigo-900 text-white font-medium">
             {state}
           </button>
         </form>

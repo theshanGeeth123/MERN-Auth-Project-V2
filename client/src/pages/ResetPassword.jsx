@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { AppContent } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import NewLogo from '../assets/LogoNew.png';
+import LoadingSpinner from "../components/LoadingSpinner";
 
 function ResetPassword() {
   const { backendUrl } = useContext(AppContent);
@@ -17,6 +19,8 @@ function ResetPassword() {
   const [isEmailSent, setIsEmailSent] = useState("");
   const [otp, setOtp] = useState(0);
   const [isOtpSubmitted, setIsOtpSubmitted] = useState(false);
+
+  const [isLoading,setIsLoading] = useState(false);
 
   const inputRefs = React.useRef([]);
 
@@ -46,10 +50,14 @@ function ResetPassword() {
     e.preventDefault();
 
     try {
+      setIsLoading(true);
+
       const { data } = await axios.post(
         "http://localhost:4000/api/auth/send-reset-otp",
         { email }
       );
+
+      setIsLoading(false);
 
       data.success ? toast.success(data.message) : toast.error(data.message);
 
@@ -73,9 +81,13 @@ function ResetPassword() {
     e.preventDefault();
 
     try {
+      setIsLoading(true);
+
         const {data} = await axios.post('http://localhost:4000/api/auth/reset-password',{
             email,otp,newPassword
         });
+
+        setIsLoading(false);
 
         data.success ? toast.success(data.message) : toast.error(data.message);
 
@@ -87,25 +99,27 @@ function ResetPassword() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to bg-purple-400">
+
+    isLoading ? <LoadingSpinner /> :
+
+    <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-white">
       <img
         onClick={() => navigate("/")}
-        src={assets.logo}
+        src={NewLogo}
         alt=""
         className="absolute left-5 sm:left-20 top-5 w-28 sm:w-32 cursor-pointer"
       />
 
-      {/* enter emai id */}
 
       {!isEmailSent && (
-        <form onSubmit={onSubmitEmail} className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm">
+        <form onSubmit={onSubmitEmail} className="bg-black p-8 rounded-lg shadow-lg w-96 text-sm">
           <h1 className="text-white text-2xl font-semibold text-center mb-4">
             Reset Password
           </h1>
           <p className="text-center mb-6 text-indigo-300">
             Enter your registered email address.
           </p>
-          <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
+          <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-xl bg-[#333A5C]">
             <img src={assets.mail_icon} alt="" className="w-3 h-3" />
             <input
               type="email"
@@ -117,7 +131,7 @@ function ResetPassword() {
             />
           </div>
 
-          <button className="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-full mt-3">
+          <button className="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-xl cursor-pointer ">
             Submit
           </button>
         </form>
@@ -126,7 +140,7 @@ function ResetPassword() {
       {/* otp input form*/}
 
       {!isOtpSubmitted && isEmailSent && 
-        <form onSubmit={onSubmitOTP} className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm">
+        <form onSubmit={onSubmitOTP} className="bg-black p-8 rounded-lg shadow-lg w-96 text-sm">
           <h1 className="text-white text-2xl font-semibold text-center mb-4">
             Reset password OTP
           </h1>
@@ -146,12 +160,12 @@ function ResetPassword() {
                   ref={(e) => (inputRefs.current[index] = e)}
                   onInput={(e) => handleInput(e, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
-                  className="w-12 h-12 bg-[#333AdC] text-white text-xg rounded-md text-center"
+                  className="w-12 h-12 bg-white/20 text-white text-xg rounded-md text-center"
                 />
               ))}
           </div>
 
-          <button className="w-full py-3 bg-gradient-to-r from-indigo-500 to-indigo-900 rounded-full text-white">
+          <button className="w-full py-3 bg-gradient-to-r from-indigo-500 to-indigo-900 rounded-xl cursor-pointer text-white">
             Submit
           </button>
         </form>
@@ -167,7 +181,7 @@ function ResetPassword() {
           <p className="text-center mb-6 text-indigo-300">
             Enter your new password below .
           </p>
-          <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
+          <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-xl bg-[#333A5C]">
             <img src={assets.mail_icon} alt="" className="w-3 h-3" />
             <input
               type="password"
@@ -179,7 +193,7 @@ function ResetPassword() {
             />
           </div>
 
-          <button className="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-full mt-3">
+          <button className="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-xl cursor-pointer mt-3">
             Submit
           </button>
         </form>
