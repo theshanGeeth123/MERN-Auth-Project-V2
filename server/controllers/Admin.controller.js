@@ -72,7 +72,7 @@ export const loginAdmin = async (req, res) => {
       expiresIn: "1h"
     });
 
-    res.cookie("token",tokenAdmin,{
+    res.cookie("adminToken",token,{
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
