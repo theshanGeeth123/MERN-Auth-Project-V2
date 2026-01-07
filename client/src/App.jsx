@@ -18,7 +18,7 @@ import CustomerHome from './pages/CustomerHome'
 function App() {
   return (
     <div>
-      <ToastContainer/>
+      <ToastContainer position="top-right" autoClose={3000} />
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/login' element={<Login/>}/>

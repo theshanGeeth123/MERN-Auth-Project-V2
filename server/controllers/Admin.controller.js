@@ -97,7 +97,7 @@ export const loginAdmin = async (req, res) => {
   }
 };
 
-
+// Admin logout
 export const logout = (req, res) => {
   try {
     res.clearCookie("adminToken", {

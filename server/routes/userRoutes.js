@@ -7,7 +7,7 @@ const userRouter = express.Router();
 userRouter.get('/data',userAuth,getUserData);
 userRouter.get('/customer/:id',getUserById);
 userRouter.get('/customer',getUserIdByEmail);
-userRouter.put('/customer/:id', updateUser);
+userRouter.put('/customer/:id',userAuth, updateUser);
 userRouter.delete('/customer/:id', deleteUser);
 
 

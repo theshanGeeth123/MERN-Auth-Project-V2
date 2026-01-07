@@ -36,7 +36,6 @@ function Login() {
           setIsLoggedin(true);
           getUserData();
           navigate('/');
-          localStorage.setItem("customer", JSON.stringify({ email }));
         } else {
           toast.error(data.message);
         }
@@ -49,7 +48,6 @@ function Login() {
         if (data.success) {
           setIsLoggedin(true);
           getUserData();
-          localStorage.setItem("customer", JSON.stringify({ email }));
           navigate('/');
         } else {
           toast.error(data.message);
