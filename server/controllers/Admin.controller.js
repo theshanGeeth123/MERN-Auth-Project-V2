@@ -1,5 +1,6 @@
 import Admin from "../models/Admin.model.js";
 import bcrypt from "bcryptjs";
+import jwt from 'jsonwebtoken'
 
 // Admin Registration
 export const adminRegister = async (req, res) => {
@@ -65,6 +66,18 @@ export const loginAdmin = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ success: false, message: "Invalid email or password" });
     }
+
+
+    const token = jwt.sign({ id:admin._id},process.env.JWT_SECRET_ADMIN,{
+      expiresIn: "1h"
+    });
+
+    res.cookie("token",tokenAdmin,{
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    })
 
     res.status(200).json({
       success: true,
