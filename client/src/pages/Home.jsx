@@ -7,16 +7,13 @@ function Home() {
   return (
     <div className="relative min-h-screen overflow-hidden">
       
-      {/* Background Image */}
       <div
         className="absolute inset-0 bg-center bg-cover bg-no-repeat blur-sm scale-110"
         style={{ backgroundImage: `url(${BgImg})` }}
       />
 
-      {/* Optional dark overlay for better contrast */}
       <div className="absolute inset-0 0" />
 
-      {/* Foreground Content */}
       <div className="relative z-10">
         <Navbar />
         <Header />

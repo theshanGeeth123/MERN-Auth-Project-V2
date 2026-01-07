@@ -1,5 +1,4 @@
 import { useContext } from 'react'
-import { assets } from '../assets/assets'
 import { AppContent } from '../context/AppContext'
 import Image1 from '../assets/mern-logo.png'
 
