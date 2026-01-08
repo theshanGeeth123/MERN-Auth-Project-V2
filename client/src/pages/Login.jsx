@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState ,useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContent } from "../context/AppContext";
 import axios from "axios";
@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 import LoadingSpinner from "../components/LoadingSpinner";
 import NewLogo from "../assets/LogoNew.png";
 import BgImg from "../assets/backgroundImage.png";
+import PasswordStatus from '../pages/SignUp/PasswordStatus'
+import InputField from '../pages/InputField'
 
 import {
   User,
@@ -28,6 +30,26 @@ function Login() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const checks = useMemo(() => {
+        return {
+            minLen: password.length >= 6,
+            upper: /[A-Z]/.test(password),
+            lower: /[a-z]/.test(password),
+            number: /\d/.test(password),
+            special: /[^A-Za-z0-9]/.test(password),
+        };
+    }, [password]);
+
+
+    const score = useMemo(() => {
+        return Object.values(checks).filter(Boolean).length;
+
+    }, [checks]);
+
+
+    const isValidPassword = score === 5;
+
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -71,7 +93,7 @@ function Login() {
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${BgImg})` }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-indigo-100/10 via-blue-900 to-blue-100/10 backdrop-blur-md" />
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-100/30 via-blue-900 to-blue-100/30 backdrop-blur-md" />
 
       <img
         src={NewLogo}
@@ -120,6 +142,8 @@ function Login() {
             value={password}
             onChange={setPassword}
           />
+
+         {state=== "Sign Up" && <PasswordStatus  checks={checks} password={password} score={score} /> }
 
           {state === "Sign Up" && (
             <>
@@ -191,34 +215,5 @@ function Login() {
     </div>
   );
 }
-
-const InputField = ({
-  Icon,
-  placeholder,
-  type = "text",
-  value,
-  onChange
-}) => (
-  <div
-    className="group flex items-center gap-3 mb-4
-    px-4 py-3 rounded-xl
-    bg-white/10 border border-white/20
-    focus-within:border-indigo-400 transition"
-  >
-    <Icon
-      size={20}
-      className="text-gray-400 group-focus-within:text-indigo-400"
-    />
-    <input
-      type={type}
-      placeholder={placeholder}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      required
-      className="w-full bg-transparent outline-none
-      text-sm text-white placeholder-gray-400"
-    />
-  </div>
-);
 
 export default Login;
