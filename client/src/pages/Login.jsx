@@ -1,4 +1,4 @@
-import React, { useContext, useState ,useMemo } from "react";
+import React, { useContext, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContent } from "../context/AppContext";
 import axios from "axios";
@@ -20,7 +20,7 @@ import {
 
 function Login() {
   const navigate = useNavigate();
-  const { setIsLoggedin, getUserData } = useContext(AppContent);
+  const {  getUserData } = useContext(AppContent);
 
   const [state, setState] = useState("Login");
   const [name, setName] = useState("");
@@ -32,27 +32,73 @@ function Login() {
   const [isLoading, setIsLoading] = useState(false);
 
   const checks = useMemo(() => {
-        return {
-            minLen: password.length >= 6,
-            upper: /[A-Z]/.test(password),
-            lower: /[a-z]/.test(password),
-            number: /\d/.test(password),
-            special: /[^A-Za-z0-9]/.test(password),
-        };
-    }, [password]);
+    return {
+      minLen: password.length >= 6,
+      upper: /[A-Z]/.test(password),
+      lower: /[a-z]/.test(password),
+      number: /\d/.test(password),
+      special: /[^A-Za-z0-9]/.test(password),
+    };
+  }, [password]);
 
 
-    const score = useMemo(() => {
-        return Object.values(checks).filter(Boolean).length;
+  const score = useMemo(() => {
+    return Object.values(checks).filter(Boolean).length;
 
-    }, [checks]);
+  }, [checks]);
 
 
-    const isValidPassword = score === 5;
+  const isValidPassword = score === 5;
+
+  const validateForm = () => {
+    if (state === "Sign Up") {
+      const nameRegex = /^[A-Za-z\s]{5,20}$/;
+      if (!nameRegex.test(name)) {
+        toast.error("Name must be 5-20 alphabetic characters");
+        return false;
+      }
+
+      if (!isValidPassword) {
+        toast.error("Password must meet all requirements");
+        return false;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast.error("Invalid email address");
+        return false;
+      }
+
+      if (!age || isNaN(age) || age < 1) {
+        toast.error("Please enter a valid age");
+        return false;
+      }
+
+      if (!phone) {
+        toast.error("Phone number is required");
+        return false;
+      }
+
+      if (!address) {
+        toast.error("Address is required");
+        return false;
+      }
+    } else {
+      if (!email || !password) {
+        toast.error("Email and password are required");
+        return false;
+      }
+    }
+
+    return true;
+  };
 
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
+
     axios.defaults.withCredentials = true;
 
     try {
@@ -72,8 +118,7 @@ function Login() {
       setIsLoading(false);
 
       if (data.success) {
-        setIsLoggedin(true);
-        getUserData();
+        await getUserData();
         navigate("/");
       } else {
         toast.error(data.message);
@@ -143,7 +188,7 @@ function Login() {
             onChange={setPassword}
           />
 
-         {state=== "Sign Up" && <PasswordStatus  checks={checks} password={password} score={score} /> }
+          {state === "Sign Up" && <PasswordStatus checks={checks} password={password} score={score} />}
 
           {state === "Sign Up" && (
             <>
@@ -182,7 +227,7 @@ function Login() {
             type="submit"
             className="w-full py-3 rounded-xl
             bg-gradient-to-r from-indigo-500 to-indigo-900
-            hover:scale-[1.02] transition font-semibold"
+            hover:scale-[1.02] transition font-semibold cursor-pointer"
           >
             {state}
           </button>
