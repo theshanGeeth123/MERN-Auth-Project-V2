@@ -64,8 +64,6 @@ SENDER_EMAIL=your_email_address@example.com
 SMTP_PASS=your_email_smtp_password
 ```
 
-> Tip: Use environment-specific secrets in production and never commit `.env` files to source control.
-
 ---
 
 ## 🚀 Quick Start
@@ -94,23 +92,6 @@ npm run dev
 
 ---
 
-## 🧪 Testing the Flow
-
-- Register a new user → Check verification email → Verify account → Log in
-- Request password reset → Use OTP from email → Set new password
-- Try protected routes to confirm role-based access works as expected
-
----
-
-## Contributing
-
-Contributions and improvements are welcome. Please open issues to report bugs or suggest enhancements and submit pull requests against the `main` branch.
-
----
-
-## License
-
-This project is provided under the MIT License. See the `LICENSE` file for details.
 
 ---
 
